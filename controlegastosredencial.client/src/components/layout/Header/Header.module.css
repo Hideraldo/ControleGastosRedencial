@@ -1,0 +1,16 @@
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 16px;
+  background: #93c5fd;
+  color: #f8fafc;
+}
+.nav a {
+  color: #ffffff;
+  margin-left: 12px;
+  text-decoration: none;
+}
+.logo {
+  font-weight: 600;
+}

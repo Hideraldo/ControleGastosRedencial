@@ -1,0 +1,6 @@
+@ControleGastosRedencial.Server_HostAddress = http://localhost:5243
+
+GET {{ControleGastosRedencial.Server_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

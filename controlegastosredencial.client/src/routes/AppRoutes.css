@@ -1,0 +1,10 @@
+.app-layout {
+  display: flex;
+}
+.app-content {
+    flex: 1;
+    min-height: calc(100vh - 56px);
+    min-width: calc(150vh);
+    display: flex;
+    justify-content: center;
+}

@@ -1,0 +1,23 @@
+.button {
+    padding: 6px 12px;
+    border-radius: 4px;
+    border: none;
+    cursor: pointer;
+    margin: 10px;
+}
+.primary {
+  background-color: #60a5fa;
+  color: white;
+}
+.secondary {
+  background-color: #e5e7eb;
+  color: #111827;
+}
+.warning {
+  background-color: #fde68a;
+  color: #111827;
+}
+.danger {
+  background-color: #fca5a5;
+  color: #111827;
+}

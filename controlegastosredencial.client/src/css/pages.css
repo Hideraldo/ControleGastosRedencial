@@ -1,0 +1,51 @@
+.page-container {
+  width: 85%;
+  margin: 0 auto;
+  padding: 16px;
+}
+
+.page-form {
+  display: flex;
+  gap: 8px;
+  align-items: flex-end;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
+.page-filter {
+  margin-bottom: 12px;
+}
+
+.page-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 16px;
+}
+.page-table th,
+.page-table td {
+  border: 1px solid #dbeafe;
+  padding: 0px 8px;
+  text-align: left;
+}
+.page-table thead th {
+  background-color: #93c5fd;
+  color: #ffffff;
+}
+.page-table tbody tr:nth-child(odd) {
+  background-color: #f0f9ff;
+}
+.page-table tbody tr:nth-child(even) {
+  background-color: #f3f4f6;
+}
+
+.page-num {
+  text-align: right !important;
+}
+
+.page-num_int {
+    text-align: center !important;
+}
+
+.page-total-row td {
+    font-weight: 600;
+}
