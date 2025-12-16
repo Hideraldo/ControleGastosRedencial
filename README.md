@@ -1,202 +1,264 @@
-# ControleGastosRedencial
+# Controle de Gastos Residencial
 
-Controle de Gastos Residencial
-Um sistema completo para gerenciamento de receitas e despesas domésticas, desenvolvido com arquitetura moderna e tecnologias atuais.
+Sistema completo para gerenciamento de receitas e despesas domésticas, desenvolvido com **arquitetura moderna** e **tecnologias atuais**, focado em organização financeira familiar.
 
-📋 Descrição
-O Controle de Gastos Residencial é uma aplicação web para gerenciamento financeiro doméstico, permitindo o controle de receitas e despesas por pessoa dentro de uma residência. O sistema oferece uma interface intuitiva para categorizar transações e acompanhar o fluxo financeiro familiar.
+---
 
-✨ Funcionalidades
-✅ Cadastro de pessoas da residência
+## 📋 Descrição
 
-✅ Categorização de transações (receitas e despesas)
+O **Controle de Gastos Residencial** é uma aplicação web para gerenciamento financeiro doméstico, permitindo o controle de **receitas e despesas por pessoa** dentro de uma residência.
 
-✅ Registro completo de transações financeiras
+O sistema oferece uma interface **intuitiva e responsiva**, facilitando a categorização de transações e o acompanhamento do fluxo financeiro familiar.
 
-✅ Interface moderna e responsiva
+---
 
-✅ Banco de dados SQLite integrado
+## ✨ Funcionalidades
 
-✅ API RESTful completa
+* ✅ Cadastro de pessoas da residência
+* ✅ Categorização de transações (receitas e despesas)
+* ✅ Registro completo de transações financeiras
+* ✅ Interface moderna e responsiva
+* ✅ Banco de dados **SQLite** integrado
+* ✅ **API RESTful** completa
+* ✅ Frontend desenvolvido com **TypeScript**, garantindo maior segurança e tipagem
 
-✅ Desenvolvido com TypeScript para maior segurança no frontend
+---
 
-🏗️ Arquitetura
-O projeto segue uma arquitetura cliente-servidor:
+## 🏗️ Arquitetura
 
-Backend (Server)
-Tecnologia: C# com .NET 8
+O projeto segue o padrão **cliente-servidor**, com separação clara entre backend e frontend.
 
-Localização: ControleGastosRedencial.Server
+### 🔧 Backend (Server)
 
-Banco de Dados: SQLite
+* **Tecnologia:** C# com .NET 8
+* **Localização:** `ControleGastosRedencial.Server`
+* **Banco de Dados:** SQLite
+* **API:** RESTful utilizando Controllers
 
-API: RESTful com controllers
+### 🎨 Frontend (Client)
 
-Frontend (Client)
-Tecnologia: React com TypeScript
+* **Tecnologia:** React com TypeScript
+* **Localização:** `controlegastosredencial.client`
+* **Framework de build:** Vite
+* **Comando de execução:** `npm run dev`
+* **Porta padrão:** `5173`
 
-Localização: controlegastosredencial.client
+---
 
-Framework: Vite (npm run dev)
+## 🧱 Modelos de Dados
 
-Porta: 5173
+### 👤 Pessoa
 
+Representa os moradores da residência que realizam transações financeiras.
 
-🧱 Modelos de Dados
-Pessoa
-Representa os moradores da residência que realizam transações.
+### 🗂️ Categoria
 
-Categoria
-Organiza as transações em grupos (Alimentação, Transporte, Lazer, Salário, etc.).
+Organiza as transações em grupos, como:
 
-Transação
-Registra as movimentações financeiras, podendo ser:
+* Alimentação
+* Transporte
+* Lazer
+* Salário
+* Outros
 
-Receita: Entrada de recursos
+### 💰 Transação
 
-Despesa: Saída de recursos
+Registra as movimentações financeiras da residência, podendo ser:
 
-Cada transação está associada a uma Pessoa e uma Categoria.
+* **Receita:** Entrada de recursos
+* **Despesa:** Saída de recursos
 
-🚀 Como Executar o Projeto
-Pré-requisitos
-Visual Studio 2022 (ou superior)
+Cada transação está associada a uma **Pessoa** e a uma **Categoria**.
 
-.NET 8 SDK
+---
 
-Node.js 18+ e npm
+## 🚀 Como Executar o Projeto
 
-Navegador web moderno
+### 📌 Pré-requisitos
 
-Passo a Passo
-Clone o repositório
+* Visual Studio 2022 (ou superior)
+* .NET 8 SDK
+* Node.js 18+ e npm
+* Navegador web moderno
 
-git clone <seu-repositorio>
+---
+
+### ▶️ Passo a Passo
+
+#### 1️⃣ Clonar o repositório
+
+```bash
+git clone
 cd ControleGastosRedencial
+```
 
-Execute o Backend (Visual Studio 2022)
+---
 
-Abra o projeto ControleGastosRedencial.sln no Visual Studio 2022
+#### 2️⃣ Executar o Backend
 
-Configure o projeto ControleGastosRedencial.Server como projeto de inicialização
+1. Abra o arquivo `ControleGastosRedencial.sln` no **Visual Studio 2022**
+2. Defina o projeto `ControleGastosRedencial.Server` como **Startup Project**
+3. Execute o projeto (`F5` ou `Ctrl + F5`)
 
-Execute o projeto (F5 ou Ctrl+F5)
+📡 O backend estará disponível em:
 
-O backend estará disponível em: https://localhost:7271 (ou porta similar)
+```
+https://localhost:7271
+```
 
-Execute o Frontend
+*(a porta pode variar)*
 
-Abra um terminal
+---
 
-Navegue até a pasta do frontend:
+#### 3️⃣ Executar o Frontend
 
+1. Abra um terminal
+2. Navegue até a pasta do frontend:
+
+```bash
 cd F:\Dev\ControleGastosRedencial\controlegastosredencial.client
+```
 
-Instale as dependências (se necessário):
+3. Instale as dependências:
 
+```bash
 npm install
+```
 
-Execute o servidor de desenvolvimento:
+4. Inicie o servidor de desenvolvimento:
 
+```bash
 npm run dev
+```
 
-Acesse a Aplicação
+---
 
-Abra seu navegador
+### 🌐 Acessar a Aplicação
 
-Acesse: http://localhost:5173
+Abra o navegador e acesse:
 
-O sistema estará pronto para uso!
+```
+http://localhost:5173
+```
 
-🔧 Configuração do Ambiente
-Banco de Dados
-O SQLite é utilizado e será criado automaticamente na primeira execução
+O sistema estará pronto para uso 🚀
 
-O arquivo do banco é gerado na pasta do projeto backend
+---
 
-Migrations são aplicadas automaticamente
+## 🔧 Configuração do Ambiente
 
-Variáveis de Ambiente
+### 🗄️ Banco de Dados
+
+* O **SQLite** é utilizado como banco de dados
+* O banco é criado automaticamente na primeira execução
+* O arquivo é gerado na pasta do projeto backend
+* As **migrations** são aplicadas automaticamente
+
+### ⚙️ Variáveis de Ambiente
+
 O projeto utiliza configurações padrão. Para personalizações:
 
-Backend: Edite appsettings.json
+* **Backend:** editar o arquivo `appsettings.json`
+* **Frontend:** configurar variáveis no arquivo `.env` (se necessário)
 
-Frontend: Configure variáveis no .env (se necessário)
+---
 
-📚 API Endpoints
-Pessoas
-GET /api/pessoas - Lista todas as pessoas
+## 📚 API Endpoints
 
-GET /api/pessoas/{id} - Obtém uma pessoa específica
+### 👤 Pessoas
 
-POST /api/pessoas - Cria uma nova pessoa
+* `GET /api/pessoas` – Lista todas as pessoas
+* `GET /api/pessoas/{id}` – Obtém uma pessoa específica
+* `POST /api/pessoas` – Cria uma nova pessoa
+* `PUT /api/pessoas/{id}` – Atualiza uma pessoa
+* `DELETE /api/pessoas/{id}` – Remove uma pessoa
 
-PUT /api/pessoas/{id} - Atualiza uma pessoa
+---
 
-DELETE /api/pessoas/{id} - Remove uma pessoa
+### 🗂️ Categorias
 
-Categorias
-GET /api/categorias - Lista todas as categorias
+* `GET /api/categorias` – Lista todas as categorias
+* `GET /api/categorias/{id}` – Obtém uma categoria específica
+* `POST /api/categorias` – Cria uma nova categoria
+* `PUT /api/categorias/{id}` – Atualiza uma categoria
+* `DELETE /api/categorias/{id}` – Remove uma categoria
 
-GET /api/categorias/{id} - Obtém uma categoria específica
+---
 
-POST /api/categorias - Cria uma nova categoria
+### 💰 Transações
 
-PUT /api/categorias/{id} - Atualiza uma categoria
+* `GET /api/transacoes` – Lista todas as transações
+* `GET /api/transacoes/{id}` – Obtém uma transação específica
+* `POST /api/transacoes` – Cria uma nova transação
+* `PUT /api/transacoes/{id}` – Atualiza uma transação
+* `DELETE /api/transacoes/{id}` – Remove uma transação
+* `GET /api/transacoes/periodo?inicio={data}&fim={data}` – Filtra transações por período
 
-DELETE /api/categorias/{id} - Remove uma categoria
+---
 
-Transações
-GET /api/transacoes - Lista todas as transações
+## 🧪 Testando a Aplicação
 
-GET /api/transacoes/{id} - Obtém uma transação específica
+### Testes Manuais
 
-POST /api/transacoes - Cria uma nova transação
+1. Cadastre algumas pessoas
+2. Crie categorias de receita e despesa
+3. Registre transações associando pessoas e categorias
+4. Verifique os saldos e o fluxo financeiro
 
-PUT /api/transacoes/{id} - Atualiza uma transação
+---
 
-DELETE /api/transacoes/{id} - Remove uma transação
+## 🤝 Contribuindo
 
-GET /api/transacoes/periodo?inicio={data}&fim={data} - Filtra por período
+Contribuições são bem-vindas!
 
-🧪 Testando a Aplicação
-Testes Manuais
-Cadastre algumas pessoas
+1. Faça um **Fork** do projeto
+2. Crie uma branch para sua feature:
 
-Crie categorias de receita e despesa
+```bash
+git checkout -b feature/AmazingFeature
+```
 
-Registre transações associando pessoas e categorias
+3. Commit suas mudanças:
 
-Verifique os relatórios e saldos
+```bash
+git commit -m "Add some AmazingFeature"
+```
 
-🤝 Contribuindo
-Faça um Fork do projeto
+4. Faça o push para a branch:
 
-Crie uma Branch para sua Feature (git checkout -b feature/AmazingFeature)
+```bash
+git push origin feature/AmazingFeature
+```
 
-Commit suas mudanças (git commit -m 'Add some AmazingFeature')
+5. Abra um **Pull Request**
 
-Push para a Branch (git push origin feature/AmazingFeature)
+---
 
-Abra um Pull Request
+## 📄 Licença
 
-📄 Licença
-Este projeto está licenciado sob a licença MIT - veja o arquivo LICENSE para detalhes.
+Este projeto está licenciado sob a licença **MIT**. Consulte o arquivo `LICENSE` para mais detalhes.
 
-🆘 Suporte
+---
+
+## 🆘 Suporte
+
 Se encontrar problemas:
 
-Verifique se todas as dependências estão instaladas
+* Verifique se todas as dependências estão instaladas
+* Confirme se backend e frontend estão em execução
+* Verifique as portas utilizadas:
 
-Confirme se ambas as aplicações (backend e frontend) estão rodando
+  * Backend: ~7271
+  * Frontend: 5173
+* Consulte os logs no console de cada aplicação
 
-Verifique as portas utilizadas (backend: ~7271, frontend: 5173)
+---
 
-Consulte os logs no console de cada aplicação
+## ✍️ Autor
 
-✍️ Autor: Hideraldo L. Rondon
-Desenvolvido como projeto de controle financeiro residencial.
+**Hideraldo L. Rondon**
+Projeto desenvolvido como estudo e portfólio para controle financeiro residencial.
 
-Aviso: Este é um projeto para fins educacionais e de portfólio. Use como referência para seus próprios projetos.
+---
 
+> ⚠️ **Aviso:** Este é um projeto com fins educacionais e de portfólio. Use como referência para seus próprios projetos.
