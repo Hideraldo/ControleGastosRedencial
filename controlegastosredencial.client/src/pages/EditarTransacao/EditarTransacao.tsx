@@ -36,7 +36,7 @@ export default function EditarTransacao() {
       setPessoaId(t.pessoaId);
       setCategoriaId(t.categoriaId);
     }).finally(() => setLoading(false));
-  }, [transacaoId]);
+  }, [transacaoId, navigate]);
 
   /** Filtra pessoas conforme o tipo da transação (Receita: 18+; Despesa: todas). */
   const filteredPessoas = pessoas.filter(p => {
@@ -53,15 +53,41 @@ export default function EditarTransacao() {
 
   /** Salva as alterações e retorna para o cadastro de transações. */
   const salvar = async () => {
+    const valorNum = parseFloat(valor || "0");
+    if (!descricao.trim()) {
+      alert("A descrição é obrigatória.");
+      return;
+    }
+    if (descricao.length > 200) {
+      alert("A descrição não pode ter mais de 200 caracteres.");
+      return;
+    }
+    if (isNaN(valorNum) || valorNum <= 0) {
+      alert("O valor deve ser maior que zero.");
+      return;
+    }
+    if (!pessoaId) {
+      alert("Selecione uma pessoa.");
+      return;
+    }
+    if (!categoriaId) {
+      alert("Selecione uma categoria.");
+      return;
+    }
     const data: TransacaoCreate = {
       descricao,
-      valor: parseFloat(valor || "0"),
+      valor: valorNum,
       tipo,
       pessoaId,
       categoriaId,
     };
-    await TransacaoService.update(transacaoId, data);
-    navigate(paths.transacoes);
+    try {
+      await TransacaoService.update(transacaoId, data);
+      navigate(paths.transacoes);
+    } catch (e: unknown) {
+      const msg = e instanceof Error ? e.message : "Erro ao salvar transação.";
+      alert(msg);
+    }
   };
 
   /** Cancela a edição e retorna para o cadastro de transações. */

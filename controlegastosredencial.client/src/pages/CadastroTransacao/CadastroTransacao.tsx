@@ -46,16 +46,42 @@ export default function CadastroTransacao() {
 
   /** Cria nova transação com os dados preenchidos e recarrega a lista. */
   const create = async () => {
+    const valorNum = parseFloat(valor || "0");
+    if (!descricao.trim()) {
+      alert("A descrição é obrigatória.");
+      return;
+    }
+    if (descricao.length > 200) {
+      alert("A descrição não pode ter mais de 200 caracteres.");
+      return;
+    }
+    if (isNaN(valorNum) || valorNum <= 0) {
+      alert("O valor deve ser maior que zero.");
+      return;
+    }
+    if (!pessoaId) {
+      alert("Selecione uma pessoa.");
+      return;
+    }
+    if (!categoriaId) {
+      alert("Selecione uma categoria.");
+      return;
+    }
     const data: TransacaoCreate = {
       descricao,
-      valor: parseFloat(valor || "0"),
+      valor: valorNum,
       tipo,
       pessoaId,
       categoriaId,
     };
-    await TransacaoService.create(data);
-    setDescricao(""); setValor("0"); setTipo(1 as TipoTransacao); setPessoaId(0); setCategoriaId(0);
-    load();
+    try {
+      await TransacaoService.create(data);
+      setDescricao(""); setValor("0"); setTipo(1 as TipoTransacao); setPessoaId(0); setCategoriaId(0);
+      load();
+    } catch (e: unknown) {
+      const msg = e instanceof Error ? e.message : "Erro ao criar transação.";
+      alert(msg);
+    }
   };
 
   /** Navega para a página de edição da transação selecionada. */

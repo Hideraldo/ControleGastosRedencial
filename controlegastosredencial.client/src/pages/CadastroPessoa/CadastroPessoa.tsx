@@ -22,10 +22,28 @@ export default function CadastroPessoa() {
 
   /** Cria uma nova pessoa com nome e idade e recarrega a lista. */
   const create = async () => {
-    await PessoaService.create({ nome, idade: parseInt(idade || "0", 10) });
-    setNome("");
-    setIdade("0");
-    load();
+    const idadeNum = parseInt(idade || "0", 10);
+    if (!nome.trim()) {
+      alert("O nome é obrigatório.");
+      return;
+    }
+    if (nome.length > 150) {
+      alert("O nome não pode ter mais de 150 caracteres.");
+      return;
+    }
+    if (isNaN(idadeNum) || idadeNum < 0 || idadeNum > 150) {
+      alert("A idade deve estar entre 0 e 150.");
+      return;
+    }
+    try {
+      await PessoaService.create({ nome, idade: idadeNum });
+      setNome("");
+      setIdade("0");
+      load();
+    } catch (e: unknown) {
+      const msg = e instanceof Error ? e.message : "Erro ao criar pessoa.";
+      alert(msg);
+    }
   };
 
   /** Navega para a página de edição da pessoa selecionada. */

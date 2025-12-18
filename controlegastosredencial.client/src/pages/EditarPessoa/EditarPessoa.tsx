@@ -26,12 +26,30 @@ export default function EditarPessoa() {
       setNome(p.nome);
       setIdade(String(p.idade));
     }).finally(() => setLoading(false));
-  }, [pessoaId]);
+  }, [pessoaId, navigate]);
 
   /** Salva as alterações e retorna para o cadastro de pessoas. */
   const salvar = async () => {
-    await PessoaService.update(pessoaId, { nome, idade: parseInt(idade || "0", 10) });
-    navigate(paths.pessoas);
+    const idadeNum = parseInt(idade || "0", 10);
+    if (!nome.trim()) {
+      alert("O nome é obrigatório.");
+      return;
+    }
+    if (nome.length > 150) {
+      alert("O nome não pode ter mais de 150 caracteres.");
+      return;
+    }
+    if (isNaN(idadeNum) || idadeNum < 0 || idadeNum > 150) {
+      alert("A idade deve estar entre 0 e 150.");
+      return;
+    }
+    try {
+      await PessoaService.update(pessoaId, { nome, idade: idadeNum });
+      navigate(paths.pessoas);
+    } catch (e: unknown) {
+      const msg = e instanceof Error ? e.message : "Erro ao salvar pessoa.";
+      alert(msg);
+    }
   };
 
   /** Cancela a edição e retorna para o cadastro de pessoas. */

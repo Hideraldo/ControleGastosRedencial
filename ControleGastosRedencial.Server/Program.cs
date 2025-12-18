@@ -5,6 +5,7 @@ using ControleGastosRedencial.Server.Repositories;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using AutoMapper;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,6 +21,7 @@ builder.Services.AddControllers()
 // Swagger/OpenAPI para documentação dos endpoints.
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddAutoMapper(cfg => { }, typeof(ControleGastosRedencial.Server.Mapping.DomainProfile));
 
 // Configuração do SQLite (string de conexão).
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");

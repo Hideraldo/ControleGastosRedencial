@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
 using ControleGastosRedencial.Server.Interfaces;
 using ControleGastosRedencial.Server.Models;
+using AutoMapper;
+using ControleGastosRedencial.Server.Models.Dtos;
 
 namespace ControleGastosRedencial.Server.Controllers
 {
@@ -14,6 +16,7 @@ namespace ControleGastosRedencial.Server.Controllers
         private readonly IRepositoryTransacao _repositoryTransacao;
         private readonly IRepositoryPessoa _repositoryPessoa;
         private readonly IRepositoryCategoria _repositoryCategoria;
+        private readonly IMapper _mapper;
 
         /// <summary>
         /// Construtor que injeta repositórios de transação, pessoa e categoria.
@@ -21,28 +24,30 @@ namespace ControleGastosRedencial.Server.Controllers
         public TransacaoController(
             IRepositoryTransacao repositoryTransacao,
             IRepositoryPessoa repositoryPessoa,
-            IRepositoryCategoria repositoryCategoria)
+            IRepositoryCategoria repositoryCategoria,
+            IMapper mapper)
         {
             _repositoryTransacao = repositoryTransacao;
             _repositoryPessoa = repositoryPessoa;
             _repositoryCategoria = repositoryCategoria;
+            _mapper = mapper;
         }
 
         /// <summary>
         /// Lista todas as transações.
         /// </summary>
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Transacao>>> GetTransacaos()
+        public async Task<ActionResult<IEnumerable<TransacaoDto>>> GetTransacaos()
         {
             var Transacaos = await _repositoryTransacao.GetAllAsync();
-            return Ok(Transacaos);
+            return Ok(_mapper.Map<IEnumerable<TransacaoDto>>(Transacaos));
         }
 
         /// <summary>
         /// Obtém uma transação pelo ID.
         /// </summary>
         [HttpGet("{id}")]
-        public async Task<ActionResult<Transacao>> GetTransacao(int id)
+        public async Task<ActionResult<TransacaoDto>> GetTransacao(int id)
         {
             var transacao = await _repositoryTransacao.GetByIdAsync(id);
 
@@ -51,44 +56,44 @@ namespace ControleGastosRedencial.Server.Controllers
                 return NotFound($"Transação com ID {id} não encontrada.");
             }
 
-            return Ok(transacao);
+            return Ok(_mapper.Map<TransacaoDto>(transacao));
         }
 
         /// <summary>
         /// Lista transações por ID da pessoa.
         /// </summary>
         [HttpGet("pessoa/{pessoaId}")]
-        public async Task<ActionResult<IEnumerable<Transacao>>> GetPorPessoa(int pessoaId)
+        public async Task<ActionResult<IEnumerable<TransacaoDto>>> GetPorPessoa(int pessoaId)
         {
             var Transacaos = await _repositoryTransacao.GetByPessoaIdAsync(pessoaId);
-            return Ok(Transacaos);
+            return Ok(_mapper.Map<IEnumerable<TransacaoDto>>(Transacaos));
         }
 
         /// <summary>
         /// Lista transações por ID da categoria.
         /// </summary>
         [HttpGet("categoria/{categoriaId}")]
-        public async Task<ActionResult<IEnumerable<Transacao>>> GetPorCategoria(int categoriaId)
+        public async Task<ActionResult<IEnumerable<TransacaoDto>>> GetPorCategoria(int categoriaId)
         {
             var Transacaos = await _repositoryTransacao.GetByCategoriaIdAsync(categoriaId);
-            return Ok(Transacaos);
+            return Ok(_mapper.Map<IEnumerable<TransacaoDto>>(Transacaos));
         }
 
         /// <summary>
         /// Lista transações por tipo (Despesa ou Receita).
         /// </summary>
         [HttpGet("tipo/{tipo}")]
-        public async Task<ActionResult<IEnumerable<Transacao>>> GetPorTipo(TipoTransacao tipo)
+        public async Task<ActionResult<IEnumerable<TransacaoDto>>> GetPorTipo(TipoTransacao tipo)
         {
             var Transacaos = await _repositoryTransacao.GetByTipoAsync(tipo);
-            return Ok(Transacaos);
+            return Ok(_mapper.Map<IEnumerable<TransacaoDto>>(Transacaos));
         }
 
         /// <summary>
         /// Cria uma nova transação.
         /// </summary>
         [HttpPost]
-        public async Task<ActionResult<Transacao>> PostTransacao([FromBody] Models.Dtos.TransacaoDto transacaoDto)
+        public async Task<ActionResult<TransacaoDto>> PostTransacao([FromBody] TransacaoDto transacaoDto)
         {
             if (transacaoDto == null)
             {
@@ -127,16 +132,9 @@ namespace ControleGastosRedencial.Server.Controllers
 
             try
             {
-                var transacao = new Transacao
-                {
-                    Descricao = transacaoDto.Descricao,
-                    Valor = transacaoDto.Valor,
-                    Tipo = transacaoDto.Tipo,
-                    CategoriaId = transacaoDto.CategoriaId,
-                    PessoaId = transacaoDto.PessoaId
-                };
+                var transacao = _mapper.Map<Transacao>(transacaoDto);
                 var transacaoCriada = await _repositoryTransacao.AddAsync(transacao);
-                return CreatedAtAction(nameof(GetTransacao), new { id = transacaoCriada.Id }, transacaoCriada);
+                return CreatedAtAction(nameof(GetTransacao), new { id = transacaoCriada.Id }, _mapper.Map<TransacaoDto>(transacaoCriada));
             }
             catch (InvalidOperationException ex)
             {
@@ -152,7 +150,7 @@ namespace ControleGastosRedencial.Server.Controllers
         /// Atualiza uma transação existente pelo ID.
         /// </summary>
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutTransacao(int id, [FromBody] Models.Dtos.TransacaoDto transacaoDto)
+        public async Task<IActionResult> PutTransacao(int id, [FromBody] TransacaoDto transacaoDto)
         {
             var transacaoExistente = await _repositoryTransacao.GetByIdAsync(id);
             if (transacaoExistente == null)
@@ -176,11 +174,7 @@ namespace ControleGastosRedencial.Server.Controllers
 
             try
             {
-                transacaoExistente.Descricao = transacaoDto.Descricao;
-                transacaoExistente.Valor = transacaoDto.Valor;
-                transacaoExistente.Tipo = transacaoDto.Tipo;
-                transacaoExistente.CategoriaId = transacaoDto.CategoriaId;
-                transacaoExistente.PessoaId = transacaoDto.PessoaId;
+                _mapper.Map(transacaoDto, transacaoExistente);
                 await _repositoryTransacao.UpdateAsync(transacaoExistente);
                 return NoContent();
             }

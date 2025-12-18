@@ -28,12 +28,25 @@ export default function EditarCategoria() {
       setDescricao(c.descricao ?? "");
       setFinalidade(c.finalidade);
     }).finally(() => setLoading(false));
-  }, [categoriaId]);
+  }, [categoriaId, navigate]);
 
   /** Salva as alterações e retorna para o cadastro de categorias. */
   const salvar = async () => {
-    await CategoriaService.update(categoriaId, { nome, descricao, finalidade });
-    navigate(paths.categorias);
+    if (!nome.trim()) {
+      alert("O nome é obrigatório.");
+      return;
+    }
+    if (nome.length > 100) {
+      alert("O nome não pode ter mais de 100 caracteres.");
+      return;
+    }
+    try {
+      await CategoriaService.update(categoriaId, { nome, descricao, finalidade });
+      navigate(paths.categorias);
+    } catch (e: unknown) {
+      const msg = e instanceof Error ? e.message : "Erro ao salvar categoria.";
+      alert(msg);
+    }
   };
 
   /** Cancela a edição e retorna para o cadastro de categorias. */

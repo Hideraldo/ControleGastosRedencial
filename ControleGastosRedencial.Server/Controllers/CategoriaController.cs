@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
 using ControleGastosRedencial.Server.Interfaces;
 using ControleGastosRedencial.Server.Models;
+using AutoMapper;
+using ControleGastosRedencial.Server.Models.Dtos;
 
 namespace ControleGastosRedencial.Server.Controllers
 {
@@ -12,30 +14,32 @@ namespace ControleGastosRedencial.Server.Controllers
     public class CategoriaController : ControllerBase
     {
         private readonly IRepositoryCategoria _repository;
+        private readonly IMapper _mapper;
 
         /// <summary>
         /// Construtor que injeta o repositório de categorias.
         /// </summary>
-        public CategoriaController(IRepositoryCategoria repository)
+        public CategoriaController(IRepositoryCategoria repository, IMapper mapper)
         {
             _repository = repository;
+            _mapper = mapper;
         }
 
         /// <summary>
         /// Lista todas as categorias.
         /// </summary>
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Categoria>>> GetCategorias()
+        public async Task<ActionResult<IEnumerable<CategoriaDto>>> GetCategorias()
         {
             var categorias = await _repository.GetAllAsync();
-            return Ok(categorias);
+            return Ok(_mapper.Map<IEnumerable<CategoriaDto>>(categorias));
         }
 
         /// <summary>
         /// Obtém uma categoria pelo ID.
         /// </summary>
         [HttpGet("{id}")]
-        public async Task<ActionResult<Categoria>> GetCategoria(int id)
+        public async Task<ActionResult<CategoriaDto>> GetCategoria(int id)
         {
             var categoria = await _repository.GetByIdAsync(id);
 
@@ -44,14 +48,14 @@ namespace ControleGastosRedencial.Server.Controllers
                 return NotFound($"Categoria com ID {id} não encontrada.");
             }
 
-            return Ok(categoria);
+            return Ok(_mapper.Map<CategoriaDto>(categoria));
         }
 
         /// <summary>
         /// Busca categorias pelo nome (parâmetro de consulta).
         /// </summary>
         [HttpGet("buscar")]
-        public async Task<ActionResult<IEnumerable<Categoria>>> BuscarPorNome([FromQuery] string nome)
+        public async Task<ActionResult<IEnumerable<CategoriaDto>>> BuscarPorNome([FromQuery] string nome)
         {
             if (string.IsNullOrWhiteSpace(nome))
             {
@@ -59,24 +63,24 @@ namespace ControleGastosRedencial.Server.Controllers
             }
 
             var categorias = await _repository.GetByNomeAsync(nome);
-            return Ok(categorias);
+            return Ok(_mapper.Map<IEnumerable<CategoriaDto>>(categorias));
         }
 
         /// <summary>
         /// Lista categorias por finalidade (Despesa, Receita ou Ambas).
         /// </summary>
         [HttpGet("finalidade/{finalidade}")]
-        public async Task<ActionResult<IEnumerable<Categoria>>> GetPorFinalidade(TipoFinalidade finalidade)
+        public async Task<ActionResult<IEnumerable<CategoriaDto>>> GetPorFinalidade(TipoFinalidade finalidade)
         {
             var categorias = await _repository.GetByFinalidadeAsync(finalidade);
-            return Ok(categorias);
+            return Ok(_mapper.Map<IEnumerable<CategoriaDto>>(categorias));
         }
 
         /// <summary>
         /// Cria uma nova categoria.
         /// </summary>
         [HttpPost]
-        public async Task<ActionResult<Categoria>> PostCategoria([FromBody] Models.Dtos.CategoriaDto categoriaDto)
+        public async Task<ActionResult<CategoriaDto>> PostCategoria([FromBody] CategoriaDto categoriaDto)
         {
             if (categoriaDto == null)
             {
@@ -95,14 +99,9 @@ namespace ControleGastosRedencial.Server.Controllers
 
             try
             {
-                var categoria = new Categoria
-                {
-                    Nome = categoriaDto.Nome,
-                    Descricao = categoriaDto.Descricao,
-                    Finalidade = categoriaDto.Finalidade
-                };
+                var categoria = _mapper.Map<Categoria>(categoriaDto);
                 var categoriaCriada = await _repository.AddAsync(categoria);
-                return CreatedAtAction(nameof(GetCategoria), new { id = categoriaCriada.Id }, categoriaCriada);
+                return CreatedAtAction(nameof(GetCategoria), new { id = categoriaCriada.Id }, _mapper.Map<CategoriaDto>(categoriaCriada));
             }
             catch (Exception ex)
             {
@@ -114,7 +113,7 @@ namespace ControleGastosRedencial.Server.Controllers
         /// Atualiza dados de uma categoria existente pelo ID.
         /// </summary>
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutCategoria(int id, [FromBody] Models.Dtos.CategoriaDto categoriaDto)
+        public async Task<IActionResult> PutCategoria(int id, [FromBody] CategoriaDto categoriaDto)
         {
             if (string.IsNullOrWhiteSpace(categoriaDto.Nome))
             {
@@ -134,9 +133,7 @@ namespace ControleGastosRedencial.Server.Controllers
 
             try
             {
-                categoriaExistente.Nome = categoriaDto.Nome;
-                categoriaExistente.Descricao = categoriaDto.Descricao;
-                categoriaExistente.Finalidade = categoriaDto.Finalidade;
+                _mapper.Map(categoriaDto, categoriaExistente);
                 await _repository.UpdateAsync(categoriaExistente);
                 return NoContent();
             }

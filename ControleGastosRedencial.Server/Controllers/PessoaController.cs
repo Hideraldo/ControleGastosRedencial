@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
 using ControleGastosRedencial.Server.Interfaces;
 using ControleGastosRedencial.Server.Models;
+using AutoMapper;
+using ControleGastosRedencial.Server.Models.Dtos;
 
 namespace ControleGastosRedencial.Server.Controllers
 {
@@ -12,30 +14,32 @@ namespace ControleGastosRedencial.Server.Controllers
     public class PessoaController : ControllerBase
     {
         private readonly IRepositoryPessoa _repository;
+        private readonly IMapper _mapper;
 
         /// <summary>
         /// Construtor que injeta o repositório de pessoas.
         /// </summary>
-        public PessoaController(IRepositoryPessoa repository)
+        public PessoaController(IRepositoryPessoa repository, IMapper mapper)
         {
             _repository = repository;
+            _mapper = mapper;
         }
 
         /// <summary>
         /// Lista todas as pessoas cadastradas.
         /// </summary>
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Pessoa>>> GetPessoas()
+        public async Task<ActionResult<IEnumerable<PessoaDto>>> GetPessoas()
         {
             var pessoas = await _repository.GetAllAsync();
-            return Ok(pessoas);
+            return Ok(_mapper.Map<IEnumerable<PessoaDto>>(pessoas));
         }
 
         /// <summary>
         /// Obtém uma pessoa pelo ID.
         /// </summary>
         [HttpGet("{id}")]
-        public async Task<ActionResult<Pessoa>> GetPessoa(int id)
+        public async Task<ActionResult<PessoaDto>> GetPessoa(int id)
         {
             var pessoa = await _repository.GetByIdAsync(id);
 
@@ -44,14 +48,14 @@ namespace ControleGastosRedencial.Server.Controllers
                 return NotFound($"Pessoa com ID {id} não encontrada.");
             }
 
-            return Ok(pessoa);
+            return Ok(_mapper.Map<PessoaDto>(pessoa));
         }
 
         /// <summary>
         /// Busca pessoas pelo nome (parâmetro de consulta).
         /// </summary>
         [HttpGet("buscar")]
-        public async Task<ActionResult<IEnumerable<Pessoa>>> BuscarPorNome([FromQuery] string nome)
+        public async Task<ActionResult<IEnumerable<PessoaDto>>> BuscarPorNome([FromQuery] string nome)
         {
             if (string.IsNullOrWhiteSpace(nome))
             {
@@ -59,14 +63,14 @@ namespace ControleGastosRedencial.Server.Controllers
             }
 
             var pessoas = await _repository.GetByNomeAsync(nome);
-            return Ok(pessoas);
+            return Ok(_mapper.Map<IEnumerable<PessoaDto>>(pessoas));
         }
 
         /// <summary>
         /// Lista pessoas por faixa de idade (mínima e máxima).
         /// </summary>
         [HttpGet("idade/{idadeMin}/{idadeMax}")]
-        public async Task<ActionResult<IEnumerable<Pessoa>>> GetPorIdadeRange(int idadeMin, int idadeMax)
+        public async Task<ActionResult<IEnumerable<PessoaDto>>> GetPorIdadeRange(int idadeMin, int idadeMax)
         {
             if (idadeMin < 0 || idadeMax < 0 || idadeMin > idadeMax)
             {
@@ -74,14 +78,14 @@ namespace ControleGastosRedencial.Server.Controllers
             }
 
             var pessoas = await _repository.GetByIdadeRangeAsync(idadeMin, idadeMax);
-            return Ok(pessoas);
+            return Ok(_mapper.Map<IEnumerable<PessoaDto>>(pessoas));
         }
 
         /// <summary>
         /// Cria uma nova pessoa.
         /// </summary>
         [HttpPost]
-        public async Task<ActionResult<Pessoa>> PostPessoa([FromBody] Models.Dtos.PessoaDto pessoaDto)
+        public async Task<ActionResult<PessoaDto>> PostPessoa([FromBody] PessoaDto pessoaDto)
         {
             if (pessoaDto == null)
             {
@@ -105,13 +109,9 @@ namespace ControleGastosRedencial.Server.Controllers
 
             try
             {
-                var pessoa = new Pessoa
-                {
-                    Nome = pessoaDto.Nome,
-                    Idade = pessoaDto.Idade
-                };
+                var pessoa = _mapper.Map<Pessoa>(pessoaDto);
                 var pessoaCriada = await _repository.AddAsync(pessoa);
-                return CreatedAtAction(nameof(GetPessoa), new { id = pessoaCriada.Id }, pessoaCriada);
+                return CreatedAtAction(nameof(GetPessoa), new { id = pessoaCriada.Id }, _mapper.Map<PessoaDto>(pessoaCriada));
             }
             catch (Exception ex)
             {
@@ -123,7 +123,7 @@ namespace ControleGastosRedencial.Server.Controllers
         /// Atualiza dados de uma pessoa existente pelo ID.
         /// </summary>
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutPessoa(int id, [FromBody] Models.Dtos.PessoaDto pessoaDto)
+        public async Task<IActionResult> PutPessoa(int id, [FromBody] PessoaDto pessoaDto)
         {
             if (string.IsNullOrWhiteSpace(pessoaDto.Nome))
             {
@@ -148,8 +148,7 @@ namespace ControleGastosRedencial.Server.Controllers
 
             try
             {
-                pessoaExistente.Nome = pessoaDto.Nome;
-                pessoaExistente.Idade = pessoaDto.Idade;
+                _mapper.Map(pessoaDto, pessoaExistente);
                 await _repository.UpdateAsync(pessoaExistente);
                 return NoContent();
             }

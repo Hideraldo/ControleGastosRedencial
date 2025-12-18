@@ -23,9 +23,22 @@ export default function CadastroCategoria() {
 
   /** Cria uma nova categoria e recarrega a lista. */
   const create = async () => {
-    await CategoriaService.create({ nome, descricao, finalidade });
-    setNome(""); setDescricao(""); setFinalidade(1 as TipoFinalidade);
-    load();
+    if (!nome.trim()) {
+      alert("O nome é obrigatório.");
+      return;
+    }
+    if (nome.length > 100) {
+      alert("O nome não pode ter mais de 100 caracteres.");
+      return;
+    }
+    try {
+      await CategoriaService.create({ nome, descricao, finalidade });
+      setNome(""); setDescricao(""); setFinalidade(1 as TipoFinalidade);
+      load();
+    } catch (e: unknown) {
+      const msg = e instanceof Error ? e.message : "Erro ao criar categoria.";
+      alert(msg);
+    }
   };
 
   /** Navega para a página de edição da categoria selecionada. */

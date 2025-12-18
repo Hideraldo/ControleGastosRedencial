@@ -1,15 +1,38 @@
 /* Cliente HTTP simples baseado em fetch, com tratamento de erros e JSON. */
 type HttpMethod = "GET" | "POST" | "PUT" | "DELETE";
 
-const BASE_URL =
-  import.meta.env.VITE_API_BASE_URL?.toString() || "https://localhost:7090";
+let RESOLVED_BASE: string | null = null;
+const CANDIDATES: string[] = [
+  ...(import.meta.env.VITE_API_BASE_URL ? [import.meta.env.VITE_API_BASE_URL.toString()] : []),
+  "http://localhost:5243",
+  "https://localhost:7090",
+];
+
+async function resolveBase(): Promise<string> {
+  if (RESOLVED_BASE) return RESOLVED_BASE;
+  for (const base of CANDIDATES) {
+    try {
+      const res = await fetch(`${base}/api/health`, { method: "GET" });
+      if (res.ok) {
+        RESOLVED_BASE = base;
+        return RESOLVED_BASE;
+      }
+    } catch {
+      // tenta próximo
+    }
+  }
+  // fallback final: usa primeira candidata ou origem do site
+  RESOLVED_BASE = CANDIDATES[0] ?? `${location.protocol}//${location.host}`;
+  return RESOLVED_BASE;
+}
 
 /** Função utilitária para requisições HTTP ao backend. */
 async function request<T>(
   path: string,
   options?: { method?: HttpMethod; body?: unknown }
 ): Promise<T> {
-  const url = `${BASE_URL}${path}`;
+  const base = await resolveBase();
+  const url = `${base}${path}`;
   const res = await fetch(url, {
     method: options?.method ?? "GET",
     headers: {

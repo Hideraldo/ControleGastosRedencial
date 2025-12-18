@@ -8,6 +8,7 @@ namespace ControleGastosRedencial.Server.Models.Dtos
     /// </summary>
     public class PessoaDto
     {
+        public int Id { get; set; }
         [Required]
         [StringLength(150)]
         public string Nome { get; set; } = string.Empty;

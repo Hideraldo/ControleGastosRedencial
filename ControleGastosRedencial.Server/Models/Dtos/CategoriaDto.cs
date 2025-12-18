@@ -8,6 +8,7 @@ namespace ControleGastosRedencial.Server.Models.Dtos
     /// </summary>
     public class CategoriaDto
     {
+        public int Id { get; set; }
         [Required]
         [StringLength(100)]
         public string Nome { get; set; } = string.Empty;
